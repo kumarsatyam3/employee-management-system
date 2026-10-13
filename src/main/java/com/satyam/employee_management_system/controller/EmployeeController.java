@@ -1,6 +1,6 @@
 package com.satyam.employee_management_system.controller;
 
-import com.satyam.employee_management_system.model.Employee;
+import com.satyam.employee_management_system.dto.EmployeeDto;
 import com.satyam.employee_management_system.service.EmployeeService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,27 +20,27 @@ public class EmployeeController {
 
     // 1. Build Create Employee REST API
     @PostMapping
-    public ResponseEntity<Employee> saveEmployee(@RequestBody Employee employee) {
-        return new ResponseEntity<>(employeeService.saveEmployee(employee), HttpStatus.CREATED);
+    public ResponseEntity<EmployeeDto> saveEmployee(@RequestBody EmployeeDto employeeDto) {
+        return new ResponseEntity<>(employeeService.saveEmployee(employeeDto), HttpStatus.CREATED);
     }
 
     // 2. Build Get All Employees REST API
     @GetMapping
-    public List<Employee> getAllEmployees() {
+    public List<EmployeeDto> getAllEmployees() {
         return employeeService.getAllEmployees();
     }
 
     // 3. Build Get Employee By ID REST API
     @GetMapping("/{id}")
-    public ResponseEntity<Employee> getEmployeeById(@PathVariable("id") Long employeeId) {
+    public ResponseEntity<EmployeeDto> getEmployeeById(@PathVariable("id") Long employeeId) {
         return new ResponseEntity<>(employeeService.getEmployeeById(employeeId), HttpStatus.OK);
     }
 
     // 4. Build Update Employee REST API
     @PutMapping("/{id}")
-    public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Long employeeId, 
-                                                   @RequestBody Employee employee) {
-        return new ResponseEntity<>(employeeService.updateEmployee(employee, employeeId), HttpStatus.OK);
+    public ResponseEntity<EmployeeDto> updateEmployee(@PathVariable("id") Long employeeId, 
+                                                   @RequestBody EmployeeDto employeeDto) {
+        return new ResponseEntity<>(employeeService.updateEmployee(employeeDto, employeeId), HttpStatus.OK);
     }
 
     // 5. Build Delete Employee REST API

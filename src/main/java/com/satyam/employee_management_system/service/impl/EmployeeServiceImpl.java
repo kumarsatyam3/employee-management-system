@@ -1,10 +1,13 @@
 package com.satyam.employee_management_system.service.impl;
 
+import com.satyam.employee_management_system.dto.EmployeeDto;
+import com.satyam.employee_management_system.mapper.EmployeeMapper;
 import com.satyam.employee_management_system.model.Employee;
 import com.satyam.employee_management_system.repository.EmployeeRepository;
 import com.satyam.employee_management_system.service.EmployeeService;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
@@ -17,37 +20,49 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    public Employee saveEmployee(Employee employee) {
-        return employeeRepository.save(employee);
+    public EmployeeDto saveEmployee(EmployeeDto employeeDto) {
+        // Dto to Entity Conversion
+        Employee employee = EmployeeMapper.mapToEmployee(employeeDto);
+        Employee savedEmployee = employeeRepository.save(employee);
+        // Entity to Dto Conversion
+        return EmployeeMapper.mapToEmployeeDto(savedEmployee);
     }
 
     @Override
-    public List<Employee> getAllEmployees() {
-        return employeeRepository.findAll();
+    public List<EmployeeDto> getAllEmployees() {
+        List<Employee> employees = employeeRepository.findAll();
+        return employees.stream()
+                        .map(EmployeeMapper::mapToEmployeeDto)
+                        .collect(Collectors.toList());
     }
 
     @Override
-    public Employee getEmployeeById(Long id) {
-        return employeeRepository.findById(id)
+    public EmployeeDto getEmployeeById(Long id) {
+        Employee employee = employeeRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+        return EmployeeMapper.mapToEmployeeDto(employee);
     }
 
     @Override
-    public Employee updateEmployee(Employee employee, Long id) {
-        Employee existingEmployee = getEmployeeById(id);
+    public EmployeeDto updateEmployee(EmployeeDto employeeDto, Long id) {
+
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
         
-        existingEmployee.setFirstName(employee.getFirstName());
-        existingEmployee.setLastName(employee.getLastName());
-        existingEmployee.setEmail(employee.getEmail());
-        existingEmployee.setDepartment(employee.getDepartment());
-        existingEmployee.setSalary(employee.getSalary());
+        existingEmployee.setFirstName(employeeDto.getFirstName());
+        existingEmployee.setLastName(employeeDto.getLastName());
+        existingEmployee.setEmail(employeeDto.getEmail());
+        existingEmployee.setDepartment(employeeDto.getDepartment());
+        existingEmployee.setSalary(employeeDto.getSalary());
         
-        return employeeRepository.save(existingEmployee);
+        Employee updatedEmployee = employeeRepository.save(existingEmployee);
+        return EmployeeMapper.mapToEmployeeDto(updatedEmployee);
     }
 
     @Override
     public void deleteEmployee(Long id) {
-        Employee existingEmployee = getEmployeeById(id);
+        Employee existingEmployee = employeeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
         employeeRepository.delete(existingEmployee);
     }
 }

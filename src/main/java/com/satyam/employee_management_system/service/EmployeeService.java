@@ -1,13 +1,13 @@
 package com.satyam.employee_management_system.service;
 
-import com.satyam.employee_management_system.model.Employee;
+import com.satyam.employee_management_system.dto.EmployeeDto;
 import java.util.List;
 
 public interface EmployeeService {
-    Employee saveEmployee(Employee employee);
-    List<Employee> getAllEmployees();
-    Employee getEmployeeById(Long id);
-    Employee updateEmployee(Employee employee, Long id);
+    EmployeeDto saveEmployee(EmployeeDto employeeDto);
+    List<EmployeeDto> getAllEmployees();
+    EmployeeDto getEmployeeById(Long id);
+    EmployeeDto updateEmployee(EmployeeDto employeeDto, Long id);
     void deleteEmployee(Long id);
 }
 
