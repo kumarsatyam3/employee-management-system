@@ -1,6 +1,7 @@
 package com.satyam.employee_management_system.service.impl;
 
 import com.satyam.employee_management_system.dto.EmployeeDto;
+import com.satyam.employee_management_system.exception.ResourceNotFoundException;
 import com.satyam.employee_management_system.mapper.EmployeeMapper;
 import com.satyam.employee_management_system.model.Employee;
 import com.satyam.employee_management_system.repository.EmployeeRepository;
@@ -39,7 +40,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public EmployeeDto getEmployeeById(Long id) {
         Employee employee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         return EmployeeMapper.mapToEmployeeDto(employee);
     }
 
@@ -47,7 +48,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     public EmployeeDto updateEmployee(EmployeeDto employeeDto, Long id) {
 
         Employee existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         
         existingEmployee.setFirstName(employeeDto.getFirstName());
         existingEmployee.setLastName(employeeDto.getLastName());
@@ -62,7 +63,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public void deleteEmployee(Long id) {
         Employee existingEmployee = employeeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Employee not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         employeeRepository.delete(existingEmployee);
     }
 }
