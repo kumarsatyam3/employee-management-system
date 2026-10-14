@@ -6,6 +6,11 @@ import com.satyam.employee_management_system.mapper.EmployeeMapper;
 import com.satyam.employee_management_system.model.Employee;
 import com.satyam.employee_management_system.repository.EmployeeRepository;
 import com.satyam.employee_management_system.service.EmployeeService;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -65,6 +70,18 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee existingEmployee = employeeRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + id));
         employeeRepository.delete(existingEmployee);
+    }
+
+    @Override
+    public List<EmployeeDto> getAllEmployeesWithPaginationAndSorting(int pageNo, int pageSize, String sortBy) {
+
+        String cleanSortBy = sortBy.split(":")[0].trim();
+        Pageable pageable = PageRequest.of(pageNo, pageSize,Sort.by(cleanSortBy));
+        Page<Employee> employeePage = employeeRepository.findAll(pageable);
+        List<Employee> listOfEmployees = employeePage.getContent();
+        return listOfEmployees.stream()
+                .map(EmployeeMapper::mapToEmployeeDto)
+                .collect(Collectors.toList());
     }
 }
 

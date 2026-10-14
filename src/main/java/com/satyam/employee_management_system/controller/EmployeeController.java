@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
+
 @RestController
 @RequestMapping("/api/employees")
 public class EmployeeController {
@@ -26,8 +27,8 @@ public class EmployeeController {
 
     // 2. Build Get All Employees REST API
     @GetMapping
-    public List<EmployeeDto> getAllEmployees() {
-        return employeeService.getAllEmployees();
+    public ResponseEntity<List<EmployeeDto>> getAllEmployees() {
+        return new ResponseEntity<>(employeeService.getAllEmployees(),HttpStatus.OK);
     }
 
     // 3. Build Get Employee By ID REST API
@@ -49,5 +50,17 @@ public class EmployeeController {
         employeeService.deleteEmployee(employeeId);
         return new ResponseEntity<>("Employee deleted successfully!", HttpStatus.OK);
     }
+
+    @GetMapping("/v2")
+    public ResponseEntity<List<EmployeeDto>> getAllEmployeesWithPagination(
+        @RequestParam(value = "pageNo", defaultValue = "0", required = false) int pageNo,
+        @RequestParam(value = "pageSize", defaultValue = "3", required = false) int pageSize,
+        @RequestParam(value = "sortBy", defaultValue = "id", required = false) String sortBy) {
+
+            List<EmployeeDto> employees = employeeService.getAllEmployeesWithPaginationAndSorting(pageNo, pageSize, sortBy);
+            return new ResponseEntity<>(employees,HttpStatus.OK);
+    
+    }
+    
 }
 
